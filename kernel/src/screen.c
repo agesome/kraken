@@ -9,6 +9,8 @@ screen_putchar (const char c)
 {
 	if (c == 0x08 && screen_cx)
 		{
+			screen_cx --;
+			screen_putchar (' ');
 			screen_cx--;
 		}
 	else if (c == 0x09)
@@ -109,4 +111,10 @@ screen_setcursor (uint8_t x, uint8_t y)
 	outb (0x3D5, (uint8_t) (position & 0xFF));
 	outb (0x3D4, 0x0E);
 	outb (0x3D5, (uint8_t) ((position >> 8) & 0xFF));
+}
+
+void
+screen_bksp (void)
+{
+	screen_setcursor (screen_cx - 1, screen_cy);
 }
