@@ -2,6 +2,8 @@
 #define KBD_H
 
 #include <ps2.h>
+#include <isr.h>
+#include <screen.h>
 
 enum
 {
@@ -9,14 +11,8 @@ enum
 	KEY_LIMIT
 };
 
-#define NKEYS (sizeof(keys)/sizeof(key_t))
-
-typedef struct {
-	uint8_t sc;
-	uint8_t v;
-} key_t;
-
-extern key_t keys[];
+extern uint8_t set2_keys[];
+extern bool _kbd_print_input; 
 
 typedef struct
 {

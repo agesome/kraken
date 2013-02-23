@@ -71,7 +71,9 @@ ps2_controller_init (void)
 	c.data = read ();
 	if (c.port2_clock)
 		ps2_dual_channel = true;
-	c.port1_int = c.port2_int = c.port1_trans = false;
+	// c.port1_int = c.port2_int = c.port1_trans = false;
+	c.port1_int = true;
+	c.port1_trans = false;
 	command (0x60);
 	write (c.data);
 
