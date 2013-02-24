@@ -1,7 +1,7 @@
 #ifndef PS2_H
 #define PS2_H
 
-#include <portio.h>
+#include <kraken/portio.h>
 #include <stdbool.h>
 
 #define PS2_DATA 0x60

@@ -4,7 +4,7 @@
 //          Rewritten for JamesM's kernel development tutorials.
 //
 
-#include <isr.h>
+#include <kraken/isr.h>
 
 isr_t interrupt_handlers[256] = {NULL};
 

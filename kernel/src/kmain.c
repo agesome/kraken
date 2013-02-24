@@ -1,11 +1,15 @@
-#include <screen.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <ps2.h>
-#include <kbd.h>
-#include <dtables.h>
-#include <isr.h>
-#include <timer.h>
+
+#include <kraken/screen.h>
+#include <kraken/ps2.h>
+#include <kraken/kbd.h>
+#include <kraken/dtables.h>
+#include <kraken/isr.h>
+#include <kraken/timer.h>
+#include <kraken/multiboot.h>
+#include <kraken/panic.h>
+
 
 void
 kinit_screen (void)
@@ -22,9 +26,21 @@ kinit_screen (void)
 }
 
 void
-kmain (unsigned long magic, unsigned long addr)
+kmain (uint32_t magic, multiboot_info_t * multiboot)
 {
 	kinit_screen ();
+
+	if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
+	{
+		screen_print ("PANIC!\n");
+		return;
+	}
+
+	// multiboot_info_t * m = addr;
+	screen_print ("kernel commandline: ");
+	screen_print ((char *) multiboot->cmdline);
+	screen_putchar ('\n');
+
 	init_gdt ();
 	init_idt ();
 	kbd_init ();
@@ -49,7 +65,7 @@ kmain (unsigned long magic, unsigned long addr)
 	__asm volatile ("sti");
 	while (1)
 	{
-		if (_kbd_state.pressed[KEY_LALT])
-			screen_print ("ALT pressed!\n");
+		// if (_kbd_state.pressed[KEY_LALT])
+			// screen_print ("ALT pressed!\n");
 	}
 }

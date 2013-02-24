@@ -1,4 +1,4 @@
-#include <dtables.h>
+#include <kraken/dtables.h>
 
 gdt_entry_t gdt_entries[5];
 gdt_ptr_t gdt_ptr;

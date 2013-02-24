@@ -1,9 +1,9 @@
 #ifndef KBD_H
 #define KBD_H
 
-#include <ps2.h>
-#include <isr.h>
-#include <screen.h>
+#include <kraken/ps2.h>
+#include <kraken/isr.h>
+#include <kraken/screen.h>
 
 enum
 {

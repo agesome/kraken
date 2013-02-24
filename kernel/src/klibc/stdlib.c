@@ -1,15 +1,12 @@
 int
 atoi (const char *str)
 {
-	int result, n, i;
+	int result = 0, i = 1, sptr = 0;
+	char c;
 
-	result = 0;
-	n = i = 1;
-	char *p;
-
-	for (p = str; *p; p++)
+	for (c = str[sptr]; c != '\0'; sptr++)
 		{
-			switch (*p)
+			switch (c)
 				{
 				case '0':
 					continue;

@@ -6,8 +6,8 @@
 #ifndef ISR_H
 #define ISR_H
 
-#include <portio.h>
-#include <screen.h>
+#include <kraken/portio.h>
+#include <kraken/screen.h>
 
 // A few defines to make life a little easier
 #define IRQ0 32

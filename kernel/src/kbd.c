@@ -1,4 +1,4 @@
-#include <kbd.h>
+#include <kraken/kbd.h>
 
 uint8_t set2_keys[] = {
 	[0x15] = 'q', [0x1d] = 'w', [0x21] = 'c', [0x2d] = 'r', [0x31] = 'n',

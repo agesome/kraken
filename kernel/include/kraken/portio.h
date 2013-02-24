@@ -8,4 +8,5 @@ uint8_t inb (uint16_t port);
 uint16_t inw (uint16_t port);
 
 #define _BV(B) (1 << B)
+
 #endif // PORTIO_H

@@ -1,4 +1,4 @@
-#include <screen.h>
+#include <kraken/screen.h>
 
 uint16_t *screen_vmem = (uint16_t *) 0xb8000;
 int screen_cx = 0, screen_cy = 0;
@@ -56,7 +56,7 @@ screen_scroll (void)
 }
 
 void
-screen_print (char *l)
+screen_print (const char *l)
 {
 	while (*l)
 		{

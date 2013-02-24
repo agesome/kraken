@@ -1,4 +1,4 @@
-#include <ps2.h>
+#include <kraken/ps2.h>
 
 #define command(C) outb (PS2_REG, C)
 #define status() inb (PS2_REG)

@@ -1,4 +1,4 @@
 *.o
 *.iso
 *.sublime-*
-kernel
+kernel/kernel
