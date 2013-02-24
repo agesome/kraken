@@ -3,7 +3,7 @@
 void
 panic (const char * s)
 {
-	screen_putchar ('\n');
+	screen_print ("\nPANIC: ");
 	screen_print (s);
 	screen_putchar ('\n');
 	while (true)

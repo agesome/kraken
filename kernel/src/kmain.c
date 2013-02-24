@@ -26,20 +26,12 @@ kinit_screen (void)
 }
 
 void
-kmain (uint32_t magic, multiboot_info_t * multiboot)
+kmain (uint32_t magic, multiboot_info_t * mbi)
 {
 	kinit_screen ();
 
 	if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
-	{
-		screen_print ("PANIC!\n");
-		return;
-	}
-
-	// multiboot_info_t * m = addr;
-	screen_print ("kernel commandline: ");
-	screen_print ((char *) multiboot->cmdline);
-	screen_putchar ('\n');
+		panic ("magic mismatch!");
 
 	init_gdt ();
 	init_idt ();

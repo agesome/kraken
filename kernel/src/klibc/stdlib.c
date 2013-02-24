@@ -49,7 +49,7 @@ atoi (const char *str)
 
 // source: http://stackoverflow.com/questions/3440726/what-is-the-proper-way-of-implementing-a-good-itoa-function
 // Yet, another good itoa implementation
-void itoa (int value, char *sp, int radix)
+char * itoa (int value, char *sp, int radix)
 {
 	char tmp[16]; // be careful with the length of the buffer
 	char *tp = tmp;
@@ -77,4 +77,5 @@ void itoa (int value, char *sp, int radix)
 		*sp++ = '-';
 	while (tp > tmp)
 		*sp++ = *--tp;
+	return sp;
 }
