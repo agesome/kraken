@@ -3,7 +3,9 @@
 
 #include <kraken/screen.h>
 #include <stdbool.h>
+#include <stdio.h>
 
-void panic (const char *);
+#define PANIC(m) panic (m, __FILE__, __LINE__);
+void panic (const char *, const char *, uint16_t);
 
 #endif // PANIC_H

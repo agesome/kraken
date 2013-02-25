@@ -46,7 +46,7 @@ kmain (uint32_t magic, multiboot_info_t * mbi)
 {
 	kinit_screen ();
 	if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
-		panic ("magic mismatch!");
+		PANIC ("magic mismatch!");
 
 	// __asm (	"cli;"
 	// 		"mov %cr0, %eax;"

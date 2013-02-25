@@ -1,11 +1,9 @@
 #include <kraken/panic.h>
 
 void
-panic (const char * s)
+panic (const char * s, const char *f, uint16_t line)
 {
-	screen_print ("\nPANIC: ");
-	screen_print (s);
-	screen_putchar ('\n');
+	printf ("\nPANIC: %s (at %s:%d)\n", s, f, line);
 	while (true)
 		__asm ("nop");
 }
