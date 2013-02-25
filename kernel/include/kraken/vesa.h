@@ -2,10 +2,12 @@
 #define VESA_H
 
 #include <stdint.h>
+#include <string.h>
+#include <stdbool.h>
 
 #define FARPTR(v) (v[0] + v[1]*16)
 
-typedef struct vesaInfo
+typedef struct vbeInfo
 {
 	uint8_t 	signature[4];
 	uint16_t 	version;
@@ -19,6 +21,8 @@ typedef struct vesaInfo
 	uint16_t	oemProductRevPtr[2];
 	uint16_t	reserved[111];
 	uint8_t		oemData[256];
-} __attribute__ ((packed)) vesaInfo_t;
+} __attribute__ ((packed)) vbeInfo_t;
+
+bool vbe_get_info (vbeInfo_t *);
 
 #endif // VESA_H

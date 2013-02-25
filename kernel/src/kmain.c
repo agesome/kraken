@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <kraken/screen.h>
 #include <kraken/ps2.h>
@@ -27,7 +28,7 @@ kinit_screen (void)
 }
 
 void
-vbe_info (vesaInfo_t * vi)
+vbe_info (vbeInfo_t * vi)
 {
 	screen_print ("Have VBE info\n");
 	printf ("VBE signature: %s\n", vi->signature);
@@ -44,9 +45,26 @@ void
 kmain (uint32_t magic, multiboot_info_t * mbi)
 {
 	kinit_screen ();
-
 	if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
 		panic ("magic mismatch!");
+
+	// __asm (	"cli;"
+	// 		"mov %cr0, %eax;"
+	// 		"and $1, %al;"
+	// 		"mov %eax, %cr0;"
+	// 		"sti;");
+
+	// vbeInfo_t vi;
+	// printf ("gettin'!\n");
+	// vbe_get_info (&vi);
+	// printf ("got info!\n");
+	// vbe_info (&vi);
+
+	// __asm (	"cli;"
+	// 		"mov %cr0, %eax;"
+	// 		"or $1, %al;"
+	// 		"mov %eax, %cr0;"
+	// 		"sti;");
 
 	init_idt ();
 	init_gdt ();
@@ -67,10 +85,10 @@ kmain (uint32_t magic, multiboot_info_t * mbi)
 	ps2_reset_device (PS2_KBD);
 	ps2_reset_device (PS2_MOUSE);
 
-	if (mbi->flags & MULTIBOOT_INFO_VIDEO_INFO)
-		vbe_info ((vesaInfo_t *) mbi->vbe_control_info);
-	else
-		screen_print ("No VBE info from multiboot!\n");
+	// if (mbi->flags & MULTIBOOT_INFO_VIDEO_INFO)
+
+	// else
+		// screen_print ("No VBE info from multiboot!\n");
 
 	// __asm volatile ("sti");
 	while (1);
