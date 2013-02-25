@@ -16,25 +16,18 @@ void register_interrupt_handler(uint8_t n, isr_t handler)
 // This gets called from our ASM interrupt handler stub.
 void isr_handler(registers_t regs)
 {
-    screen_print("recieved ISR!\n");
-    // screen_print(regs.int_no);
-    // monitor_put('\n');
-
     if (interrupt_handlers[regs.int_no] != 0)
     {
         isr_t handler = interrupt_handlers[regs.int_no];
         handler(regs);
     }
+    // else
+        // printf ("\nUnhandled ISR! %ld\n", regs.int_no);
 }
 
 // This gets called from our ASM interrupt handler stub.
 void irq_handler(registers_t regs)
 {
-    // char buf[10];
-    // itoa (regs.int_no, buf, 10);
-    // screen_print("recieved IRQ: ");
-    // screen_print(buf);
-    // screen_print("\n");
     // Send an EOI (end of interrupt) signal to the PICs.
     // If this interrupt involved the slave.
     if (regs.int_no >= 40)
@@ -50,5 +43,4 @@ void irq_handler(registers_t regs)
         isr_t handler = interrupt_handlers[regs.int_no];
         handler(regs);
     }
-
 }

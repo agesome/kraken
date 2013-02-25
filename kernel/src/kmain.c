@@ -9,7 +9,7 @@
 #include <kraken/timer.h>
 #include <kraken/multiboot.h>
 #include <kraken/panic.h>
-
+#include <kraken/vesa.h>
 
 void
 kinit_screen (void)
@@ -23,6 +23,21 @@ kinit_screen (void)
 			screen_print ("color screen found\n");
 			screen_defcolor ();
 		}
+	init_printf (NULL, putc_);
+}
+
+void
+vbe_info (vesaInfo_t * vi)
+{
+	screen_print ("Have VBE info\n");
+	printf ("VBE signature: %s\n", vi->signature);
+	printf ("VBE version: %x\n", vi->version);
+	printf ("OEM software rev.: %d\n", vi->oemSoftwareRev);
+	printf ("OEM string: %s\n", (char *) FARPTR (vi->oemStringPtr));
+	printf ("OEM string: %s\n", (char *) FARPTR (vi->oemVendorNamePtr));
+	printf ("OEM string: %s\n", (char *) FARPTR (vi->oemProductNamePtr));
+	printf ("OEM string: %s\n", (char *) FARPTR (vi->oemProductRevPtr));
+	printf ("Video memory, KB: %d\n", vi->totalMemory * 64);
 }
 
 void
@@ -33,8 +48,8 @@ kmain (uint32_t magic, multiboot_info_t * mbi)
 	if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
 		panic ("magic mismatch!");
 
-	init_gdt ();
 	init_idt ();
+	init_gdt ();
 	kbd_init ();
 	init_timer (100);
 
@@ -52,12 +67,11 @@ kmain (uint32_t magic, multiboot_info_t * mbi)
 	ps2_reset_device (PS2_KBD);
 	ps2_reset_device (PS2_MOUSE);
 
-	// _kbd_print_input = false;
+	if (mbi->flags & MULTIBOOT_INFO_VIDEO_INFO)
+		vbe_info ((vesaInfo_t *) mbi->vbe_control_info);
+	else
+		screen_print ("No VBE info from multiboot!\n");
 
-	__asm volatile ("sti");
-	while (1)
-	{
-		// if (_kbd_state.pressed[KEY_LALT])
-			// screen_print ("ALT pressed!\n");
-	}
+	// __asm volatile ("sti");
+	while (1);
 }

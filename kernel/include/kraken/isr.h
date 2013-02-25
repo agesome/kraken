@@ -8,6 +8,8 @@
 
 #include <kraken/portio.h>
 #include <kraken/screen.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 // A few defines to make life a little easier
 #define IRQ0 32

@@ -30,7 +30,7 @@ isr_common_stub:
   .globl isr\n
   isr\n:
     cli                         # Disable interrupts firstly.
-    push 0                 # Push a dummy error code.
+    push $0                 # Push a dummy error code.
     push \n                # Push the interrupt number.
     jmp isr_common_stub         # Go to our common handler code.
 .endm
@@ -40,7 +40,7 @@ isr_common_stub:
 .macro ISR_ERRCODE n
   .globl isr\n
   isr\n:
-    cli                         # Disable interrupts.
+    cli                        # Disable interrupts.
     push \n                # Push the interrupt number
     jmp isr_common_stub
 .endm
