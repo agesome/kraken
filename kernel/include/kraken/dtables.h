@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <string.h>
 #include <kraken/portio.h>
+#include <kraken/v86.h>
+#include <kraken/isr.h>
 
 struct gdt_entry_struct {
 	uint16_t limit_low;           // The lower 16 bits of the limit.
@@ -85,11 +87,14 @@ extern void irq6 ();
 extern void irq7 ();
 extern void irq8 ();
 extern void irq9 ();
-extern void irq10();
-extern void irq11();
-extern void irq12();
-extern void irq13();
-extern void irq14();
-extern void irq15();
+extern void irq10 ();
+extern void irq11 ();
+extern void irq12 ();
+extern void irq13 ();
+extern void irq14 ();
+extern void irq15 ();
 
+extern void isr_syscall ();
+
+void init_descriptor_tables ();
 #endif // DTABLES_H

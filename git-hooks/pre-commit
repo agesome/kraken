@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# Hook used to indent all source files before commiting
+#
+# Modified. Originally found at https://gist.github.com/1250603
+
+FMT="$(git config hooks.format)"
+if test ! -x "$FMT"
+then
+	echo "Unable to find uncrustify executable on the configuration."
+	echo
+	echo "Please configure it with :"
+	echo "  git config hooks.format /path/to/uncrustify"
+	echo
+fi
+
+# indent / format file by type
+indent() {
+	# getting against as the current commit
+	if git rev-parse --verify HEAD >/dev/null 2>&1
+	then
+		local against=HEAD
+	else
+		# Initial commit: diff against an empty tree object
+		local against=4b825dc642cb6eb9a060e54bf8d69288fbee4904
+	fi
+
+	# loop on modified files
+	git diff --cached --name-only $against |while read file;
+	do
+		local ext=$(expr "$file" : ".*\(\..*\)")
+		case $ext in
+		.cpp|.hpp|.c|.h)
+			__indent_CPP;
+		;;
+		esac
+	done
+}
+
+__indent_CPP() {
+	if test ! -x "$FMT"
+	then
+		return;
+	fi
+	if test ! -f $file
+	then
+		return;
+	fi
+
+	echo "Indenting " $file
+	"$FMT" -c $(git-rev-parse --show-toplevel)/git-hooks/gnu-indent.cfg "$file" --replace --no-backup
+	git add "$file"
+}
+
+indent

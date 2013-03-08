@@ -11,6 +11,7 @@
 #include <kraken/multiboot.h>
 #include <kraken/panic.h>
 #include <kraken/vesa.h>
+#include <kraken/v86.h>
 
 void
 kinit_screen (void)
@@ -35,61 +36,32 @@ vbe_info (vbeInfo_t * vi)
 	printf ("VBE version: %x\n", vi->version);
 	printf ("OEM software rev.: %d\n", vi->oemSoftwareRev);
 	printf ("OEM string: %s\n", (char *) FARPTR (vi->oemStringPtr));
-	printf ("OEM string: %s\n", (char *) FARPTR (vi->oemVendorNamePtr));
-	printf ("OEM string: %s\n", (char *) FARPTR (vi->oemProductNamePtr));
-	printf ("OEM string: %s\n", (char *) FARPTR (vi->oemProductRevPtr));
 	printf ("Video memory, KB: %d\n", vi->totalMemory * 64);
 }
 
 void
 kmain (uint32_t magic, multiboot_info_t * mbi)
 {
+	init_descriptor_tables ();
 	kinit_screen ();
 	if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
 		PANIC ("magic mismatch!");
 
-	// __asm (	"cli;"
-	// 		"mov %cr0, %eax;"
-	// 		"and $1, %al;"
-	// 		"mov %eax, %cr0;"
-	// 		"sti;");
-
-	// vbeInfo_t vi;
-	// printf ("gettin'!\n");
-	// vbe_get_info (&vi);
-	// printf ("got info!\n");
-	// vbe_info (&vi);
-
-	// __asm (	"cli;"
-	// 		"mov %cr0, %eax;"
-	// 		"or $1, %al;"
-	// 		"mov %eax, %cr0;"
-	// 		"sti;");
-
-	init_idt ();
-	init_gdt ();
-	kbd_init ();
+	__asm volatile ("sti;");
 	init_timer (100);
-
-	if (ps2_controller_init ())
-		screen_print ("PS/2 cotroller OK\n");
-	else
+	if (!ps2_controller_init ())
 		screen_print ("PS/2 controller NOT OK\n");
-	bool kbd, mouse;
-	ps2_test_ports (&kbd, &mouse);
-	if (kbd)
-		screen_print ("keyboard present\n");
-	if (mouse)
-		screen_print ("mouse present\n");
-	ps2_set_ports (kbd, mouse);
-	ps2_reset_device (PS2_KBD);
-	ps2_reset_device (PS2_MOUSE);
+	else
+		kbd_init ();
 
-	// if (mbi->flags & MULTIBOOT_INFO_VIDEO_INFO)
+	init_v86 ();
+	__asm volatile ("int $0x80;");
 
-	// else
-		// screen_print ("No VBE info from multiboot!\n");
+	vbeInfo_t info;
+	vbe_get_info (&info);
+	vbe_info (&info);
 
-	// __asm volatile ("sti");
-	while (1);
+	printf ("returned!\n");
+	while (1)
+		;
 }

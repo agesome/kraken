@@ -17,9 +17,14 @@ static void kbd_callback (registers_t);
 void
 kbd_init ()
 {
+	bool kbd, _;
+
+	ps2_test_ports (&kbd, &_);
+	ps2_set_ports (kbd, false);
+	ps2_reset_device (PS2_KBD);
 	for (int i = 0; i < KEY_LIMIT; i++)
 		_kbd_state.pressed[i] = false;
-	register_interrupt_handler(IRQ1, &kbd_callback);
+	register_interrupt_handler (IRQ1, &kbd_callback);
 }
 
 static void
@@ -28,8 +33,10 @@ kbd_callback (registers_t regs)
 	scancode_t c;
 	uint8_t v;
 
-	kbd_get_scancode (&c);
-	v = kbd_decode_scancode (c);
+	if (kbd_get_scancode (&c))
+		v = kbd_decode_scancode (c);
+	else
+		return;
 	if (v == NO_KEY)
 		return;
 	if (_kbd_print_input)
@@ -51,26 +58,27 @@ kbd_decode_scancode (const scancode_t code)
 	bool release = false;
 
 	do
-	{
-		switch (byte)
 		{
-			case 0xe0: done = true; break; // media/keypad
-			case 0xf0: release = true; break;
-			default:
-			{
-				if (bi > 2) // multibyte scancode
-					return NO_KEY;
-				if (set2_keys[byte] == 0)
-					return NO_KEY;
-				_kbd_state.pressed[set2_keys[byte]] = !release;
-				if (release)
-					return NO_KEY;
-				return set2_keys[byte];
-			}
-		}
-		byte = code.bytes[bi++];
-	}
-	while (!done && bi < 8);
+			switch (byte)
+				{
+				case 0xe0: done = true; break; // media/keypad
+
+				case 0xf0: release = true; break;
+
+				default:
+				{
+					if (bi > 2) // multibyte scancode
+						return NO_KEY;
+					if (set2_keys[byte] == 0)
+						return NO_KEY;
+					_kbd_state.pressed[set2_keys[byte]] = !release;
+					if (release)
+						return NO_KEY;
+					return set2_keys[byte];
+				}
+				}
+			byte = code.bytes[bi++];
+		} while (!done && bi < 8);
 	return NO_KEY;
 }
 

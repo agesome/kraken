@@ -1,25 +1,23 @@
-.att_syntax
-	
-.globl gdt_flush
-.type gdt_flush, @function
+.globl gdt_flush    # Allows the C code to call gdt_flush().
 
 gdt_flush:
-	movl %eax, 4(%esp)
-	lgdt (%eax)      
+    mov 4(%esp), %eax  # Get the pointer to the GDT, passed as a parameter.
+    lgdt (%eax)        # Load the new GDT pointer
 
-	mov $0x10, %ax
-	mov %ax, %ds      
-	mov %ax, %es
-	mov %ax, %fs
-	mov %ax, %gs
-	mov %ax, %ss
-	ret
+    mov $0x10, %ax      # 0x10 is the offset in the GDT to our data segment
+    mov %ax, %ds        # Load all data segment selectors
+    mov %ax, %es
+    mov %ax, %fs
+    mov %ax, %gs
+    mov %ax, %ss
+    jmp $0x08, $flush  # 0x08 is the offset to our code segment: Far jump!
+flush:
+   ret
 
-.globl idt_flush
-.type idt_flush, @function
+.globl idt_flush    # Allows the C code to call idt_flush().
 
 idt_flush:
-	movl %eax, 4(%esp)
-	lidt (%eax)      
-	ret
+    mov 4(%esp), %eax  # Get the pointer to the IDT, passed as a parameter. 
+    lidt (%eax)        # Load the IDT pointer.
+    ret
 
